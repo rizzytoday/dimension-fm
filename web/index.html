@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dimension FM</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1a1a1a;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8e8e8;
+    --text-dim: rgba(255,255,255,0.45);
+    --accent: #ff6b4a;
+    --accent-glow: rgba(255,107,74,0.3);
+    --green: #4ade80;
+    --green-glow: rgba(74,222,128,0.3);
+    --blue: #60a5fa;
+    --purple: #a78bfa;
+    --warm: #fbbf24;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Ambient background */
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .ambient::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+    top: -200px;
+    right: -100px;
+    animation: drift 20s ease-in-out infinite alternate;
+  }
+  .ambient::after {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(96,165,250,0.15), transparent 70%);
+    bottom: -200px;
+    left: -100px;
+    animation: drift 25s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes drift {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(60px, 40px) scale(1.2); }
+  }
+
+  /* Main container */
+  .radio {
+    position: relative;
+    z-index: 1;
+    width: 460px;
+    max-width: 95vw;
+  }
+
+  /* Station header */
+  .station {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .station-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .station-freq {
+    font-family: 'Space Mono', monospace;
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text), var(--text-dim));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+  .station-tagline {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Now playing card */
+  .now-playing {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+
+  .show-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,107,74,0.12);
+    border: 1px solid rgba(255,107,74,0.2);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+  }
+  .show-badge .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .show-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .show-hosts {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+
+  /* Visualizer */
+  .visualizer {
+    display: flex;
+    align-items: end;
+    gap: 3px;
+    height: 40px;
+    margin-bottom: 20px;
+  }
+  .visualizer .bar {
+    flex: 1;
+    background: var(--accent);
+    border-radius: 2px;
+    min-height: 3px;
+    transition: height 0.15s ease;
+    opacity: 0.7;
+  }
+  .visualizer.active .bar {
+    animation: eq var(--speed) ease-in-out infinite alternate;
+  }
+  @keyframes eq {
+    0% { height: var(--min-h); }
+    100% { height: var(--max-h); }
+  }
+
+  /* Progress */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--surface-2);
+    border-radius: 100px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 100px;
+    width: 0%;
+    transition: width 0.3s linear;
+  }
+  .progress-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    min-width: 36px;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+  .ctrl-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ctrl-btn:hover {
+    color: var(--text);
+    background: rgba(255,255,255,0.06);
+  }
+  .ctrl-btn.play {
+    width: 56px;
+    height: 56px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+  }
+  .ctrl-btn.play:hover {
+    background: #ff7d5e;
+    transform: scale(1.05);
+    box-shadow: 0 0 30px var(--accent-glow);
+  }
+  .ctrl-btn.play:active {
+    transform: scale(0.97);
+  }
+  .ctrl-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+  .ctrl-btn.play svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Channel strip */
+  .channels {
+    display: flex;
+    gap: 8px;
+  }
+  .channel-btn {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+  .channel-btn:hover {
+    background: var(--surface-2);
+    border-color: rgba(255,255,255,0.12);
+    transform: translateY(-2px);
+  }
+  .channel-btn.active {
+    border-color: var(--accent);
+    background: rgba(255,107,74,0.08);
+  }
+  .channel-btn .ch-icon {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .channel-btn .ch-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+  }
+  .channel-btn.active .ch-name {
+    color: var(--accent);
+  }
+  .channel-btn .ch-time {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.25);
+    margin-top: 2px;
+  }
+
+  /* Transcript */
+  .transcript {
+    margin-top: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 20px;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+  .transcript-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .transcript-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.7);
+  }
+  .transcript-text .speaker {
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .transcript-text .speaker.s2 {
+    color: var(--blue);
+  }
+
+  /* Scrollbar */
+  .transcript::-webkit-scrollbar { width: 4px; }
+  .transcript::-webkit-scrollbar-track { background: transparent; }
+  .transcript::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+  /* Volume control */
+  .volume-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .volume-icon {
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .volume-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+  .volume-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--surface-2);
+    border-radius: 100px;
+    outline: none;
+    cursor: pointer;
+  }
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+  .volume-pct {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    min-width: 32px;
+    text-align: right;
+  }
+
+  /* Ad break badge */
+  .show-badge.ad-break {
+    background: rgba(251,191,36,0.12);
+    border-color: rgba(251,191,36,0.25);
+    color: var(--warm);
+  }
+  .show-badge.ad-break .live-dot {
+    background: var(--warm);
+  }
+
+  /* Loading state */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: opacity 0.5s ease;
+  }
+  .loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .loading-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: 16px;
+    letter-spacing: 0.05em;
+  }
+  .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="radio">
+  <div class="station">
+    <div class="station-name">Dimension FM</div>
+    <div class="station-freq">97.3</div>
+    <div class="station-tagline">Broadcasting across all dimensions</div>
+  </div>
+
+  <div class="now-playing">
+    <div class="show-badge">
+      <span class="live-dot"></span>
+      <span id="badge-text">ON AIR</span>
+    </div>
+
+    <div class="show-title" id="show-title">Morning Show</div>
+    <div class="show-hosts" id="show-hosts">with Rick & Zara</div>
+
+    <div class="visualizer" id="visualizer"></div>
+
+    <div class="progress-row">
+      <span class="progress-time" id="time-current">0:00</span>
+      <div class="progress-bar" id="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <span class="progress-time" id="time-total">0:00</span>
+    </div>
+
+    <div class="controls">
+      <button class="ctrl-btn" id="btn-prev" title="Previous segment">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+      </button>
+      <button class="ctrl-btn play" id="btn-play" title="Play">
+        <svg viewBox="0 0 24 24" fill="currentColor" id="icon-play"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <button class="ctrl-btn" id="btn-next" title="Next segment">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+      </button>
+    </div>
+
+    <div class="volume-row">
+      <span class="volume-icon" id="volume-icon" title="Mute">
+        <svg viewBox="0 0 24 24" fill="currentColor" id="volume-svg"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </span>
+      <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="80">
+      <span class="volume-pct" id="volume-pct">80%</span>
+    </div>
+    </div>
+
+  <div class="channels" id="channels"></div>
+
+  <div class="transcript">
+    <div class="transcript-label">Now Playing</div>
+    <div class="transcript-text" id="transcript"></div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Tuning in...</div>
+</div>
+
+<script>
+// --- Show definitions (channels visible in UI) ---
+const SHOWS = {
+  morning: {
+    name: "Morning Show",
+    hosts: "with Rick & Zara",
+    icon: "\u2615",
+    time: "6AM-12PM",
+    color: "--warm",
+  },
+  news: {
+    name: "Dimension News",
+    hosts: "Anchor & Field Reporter",
+    icon: "\uD83D\uDCE1",
+    time: "12PM-5PM",
+    color: "--blue",
+  },
+  bedtime: {
+    name: "Bedtime Stories",
+    hosts: "with Luna",
+    icon: "\uD83C\uDF19",
+    time: "10PM-2AM",
+    color: "--purple",
+  },
+};
+
+// --- State ---
+let currentShow = "morning";
+let playlist = [];       // Array of { show, segIdx, text }
+let playlistIdx = 0;
+let isPlaying = false;
+let audioEl = new Audio();
+let staticEl = new Audio("../audio/sfx/static.wav");
+let manifests = {};      // showKey -> manifest data
+let volume = parseInt(localStorage.getItem("dfm-volume") ?? "80") / 100;
+
+// --- Init ---
+async function init() {
+  buildVisualizer();
+  buildChannels();
+  await loadManifests();
+  initVolume();
+  document.getElementById("loading").classList.add("hidden");
+  switchShow(getTimeBasedShow());
+}
+
+function getTimeBasedShow() {
+  const h = new Date().getHours();
+  let preferred = "morning";
+  if (h >= 6 && h < 12) preferred = "morning";
+  else if (h >= 12 && h < 22) preferred = "news";
+  else preferred = "bedtime";
+
+  if (manifests[preferred]) return preferred;
+  const available = Object.keys(manifests);
+  return available.length > 0 ? available[0] : preferred;
+}
+
+async function loadManifests() {
+  // Load all show manifests (including ads, morning_ep2)
+  const allKeys = [...Object.keys(SHOWS), "ads", "morning_ep2"];
+  for (const key of allKeys) {
+    try {
+      const resp = await fetch(`../audio/${key}/manifest.json`);
+      if (resp.ok) manifests[key] = await resp.json();
+    } catch (e) {
+      console.log(`No manifest for ${key} yet`);
+    }
+  }
+
+  // Merge morning_ep2 into morning manifest
+  if (manifests.morning && manifests.morning_ep2) {
+    const ep2Segs = manifests.morning_ep2.segments.map((seg, i) => ({
+      ...seg,
+      index: manifests.morning.segments.length + i,
+      _show: "morning_ep2",  // track origin for audio path
+    }));
+    manifests.morning.segments = [...manifests.morning.segments, ...ep2Segs];
+    console.log(`Morning show: ${manifests.morning.segments.length} segments (ep1 + ep2)`);
+  }
+}
+
+// --- Playlist system ---
+function buildPlaylist(showKey) {
+  const manifest = manifests[showKey];
+  if (!manifest) return [];
+
+  const items = [];
+
+  // Bedtime gets a piano jingle intro
+  if (showKey === "bedtime") {
+    items.push({
+      show: "sfx",
+      segIdx: 0,
+      text: "",
+      path: "bedtime_jingle.wav",
+      isAd: false,
+      isJingle: true,
+    });
+  }
+
+  const adManifest = manifests.ads;
+  let adIdx = 0;
+
+  // Skip first bedtime segment (old spoken intro — replaced by piano jingle)
+  const startIdx = (showKey === "bedtime") ? 1 : 0;
+  manifest.segments.slice(startIdx).forEach((seg, i) => {
+    items.push({
+      show: seg._show || showKey,  // Use _show for merged ep2 segments
+      segIdx: seg.index,
+      text: seg.text,
+      path: seg.path,
+      isAd: false,
+    });
+
+    // Insert an ad every 2 segments (after 2nd, 4th, etc.)
+    if (adManifest && (i + 1) % 2 === 0 && i < manifest.segments.length - 1) {
+      const ad = adManifest.segments[adIdx % adManifest.segments.length];
+      items.push({
+        show: "ads",
+        segIdx: ad.index,
+        text: ad.text,
+        path: ad.path,
+        isAd: true,
+      });
+      adIdx++;
+    }
+  });
+
+  return items;
+}
+
+function loadPlaylistItem(idx) {
+  if (idx < 0 || idx >= playlist.length) return;
+  playlistIdx = idx;
+
+  const item = playlist[idx];
+  const filename = item.path.split("/").pop();
+  const src = `../audio/${item.show}/${filename}`;
+  console.log("Loading:", src, item.isAd ? "(AD)" : item.isJingle ? "(JINGLE)" : "");
+  audioEl.src = src;
+  audioEl.load();
+
+  // Update badge
+  const badge = document.getElementById("badge-text");
+  const badgeEl = badge.parentElement;
+  if (item.isAd) {
+    badge.textContent = "AD BREAK";
+    badgeEl.classList.add("ad-break");
+  } else {
+    badge.textContent = "ON AIR";
+    badgeEl.classList.remove("ad-break");
+  }
+
+  updateTranscript(item.isJingle ? "" : item.text);
+}
+
+// --- Static SFX ---
+function playStatic(durationMs = 300) {
+  return new Promise(resolve => {
+    staticEl.currentTime = 0;
+    staticEl.volume = volume * 0.5;  // 50% of main volume
+    staticEl.play().catch(() => {});
+    setTimeout(() => {
+      staticEl.pause();
+      staticEl.currentTime = 0;
+      resolve();
+    }, durationMs);
+  });
+}
+
+// --- Visualizer ---
+function buildVisualizer() {
+  const viz = document.getElementById("visualizer");
+  for (let i = 0; i < 32; i++) {
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    const speed = 0.3 + Math.random() * 0.5;
+    const minH = 3 + Math.random() * 5;
+    const maxH = 15 + Math.random() * 25;
+    bar.style.setProperty("--speed", `${speed}s`);
+    bar.style.setProperty("--min-h", `${minH}px`);
+    bar.style.setProperty("--max-h", `${maxH}px`);
+    bar.style.animationDelay = `${Math.random() * -2}s`;
+    viz.appendChild(bar);
+  }
+}
+
+// --- Channels ---
+function buildChannels() {
+  const container = document.getElementById("channels");
+  for (const [key, show] of Object.entries(SHOWS)) {
+    const btn = document.createElement("div");
+    btn.className = `channel-btn${key === currentShow ? " active" : ""}`;
+    btn.dataset.show = key;
+    btn.innerHTML = `
+      <div class="ch-icon">${show.icon}</div>
+      <div class="ch-name">${show.name}</div>
+      <div class="ch-time">${show.time}</div>
+    `;
+    btn.addEventListener("click", () => switchShow(key));
+    container.appendChild(btn);
+  }
+}
+
+async function switchShow(key) {
+  if (!manifests[key]) {
+    console.log(`No audio for ${key} yet`);
+    return;
+  }
+
+  const wasPlaying = isPlaying;
+  audioEl.pause();
+  isPlaying = false;
+
+  // Play static on channel switch (skip on first load)
+  if (currentShow !== key && playlist.length > 0) {
+    await playStatic(200);
+  }
+
+  currentShow = key;
+  playlist = buildPlaylist(key);
+  playlistIdx = 0;
+
+  const show = SHOWS[key];
+  document.getElementById("show-title").textContent = show.name;
+  document.getElementById("show-hosts").textContent = show.hosts;
+
+  document.querySelectorAll(".channel-btn").forEach(b => {
+    b.classList.toggle("active", b.dataset.show === key);
+  });
+
+  loadPlaylistItem(0);
+  updatePlayIcon();
+}
+
+// --- Audio Playback ---
+function togglePlay() {
+  if (isPlaying) {
+    audioEl.pause();
+  } else {
+    audioEl.play().catch(e => console.error("Play failed:", e));
+  }
+}
+
+function nextSegment() {
+  if (playlist.length === 0) return;
+  const next = playlistIdx + 1;
+  if (next < playlist.length) {
+    const wasPlaying = isPlaying;
+    loadPlaylistItem(next);
+    if (wasPlaying) audioEl.play();
+  }
+}
+
+function prevSegment() {
+  if (audioEl.currentTime > 2) {
+    audioEl.currentTime = 0;
+  } else if (playlistIdx > 0) {
+    const wasPlaying = isPlaying;
+    loadPlaylistItem(playlistIdx - 1);
+    if (wasPlaying) audioEl.play();
+  }
+}
+
+// --- Audio Events ---
+audioEl.addEventListener("error", (e) => {
+  console.error("Audio error:", audioEl.error?.message, "code:", audioEl.error?.code, "src:", audioEl.src);
+});
+
+audioEl.addEventListener("play", () => {
+  isPlaying = true;
+  updatePlayIcon();
+  document.getElementById("visualizer").classList.add("active");
+});
+
+audioEl.addEventListener("pause", () => {
+  isPlaying = false;
+  updatePlayIcon();
+  document.getElementById("visualizer").classList.remove("active");
+});
+
+audioEl.addEventListener("ended", () => {
+  const next = playlistIdx + 1;
+  if (next < playlist.length) {
+    loadPlaylistItem(next);
+    audioEl.play().catch(e => console.error("Autoplay failed:", e));
+  }
+});
+
+audioEl.addEventListener("timeupdate", () => {
+  const pct = audioEl.duration ? (audioEl.currentTime / audioEl.duration) * 100 : 0;
+  document.getElementById("progress-fill").style.width = `${pct}%`;
+  document.getElementById("time-current").textContent = fmtTime(audioEl.currentTime);
+  document.getElementById("time-total").textContent = fmtTime(audioEl.duration || 0);
+});
+
+// --- Volume ---
+function initVolume() {
+  const slider = document.getElementById("volume-slider");
+  const pctEl = document.getElementById("volume-pct");
+
+  slider.value = volume * 100;
+  audioEl.volume = volume;
+  staticEl.volume = volume * 0.5;
+  pctEl.textContent = `${Math.round(volume * 100)}%`;
+  updateVolumeIcon();
+
+  slider.addEventListener("input", (e) => {
+    volume = parseInt(e.target.value) / 100;
+    audioEl.volume = volume;
+    staticEl.volume = volume * 0.5;
+    pctEl.textContent = `${Math.round(volume * 100)}%`;
+    localStorage.setItem("dfm-volume", String(Math.round(volume * 100)));
+    updateVolumeIcon();
+  });
+
+  document.getElementById("volume-icon").addEventListener("click", () => {
+    if (volume > 0) {
+      slider.dataset.prevVol = String(Math.round(volume * 100));
+      slider.value = 0;
+      slider.dispatchEvent(new Event("input"));
+    } else {
+      const prev = parseInt(slider.dataset.prevVol ?? "80");
+      slider.value = prev;
+      slider.dispatchEvent(new Event("input"));
+    }
+  });
+}
+
+function updateVolumeIcon() {
+  const svg = document.getElementById("volume-svg");
+  if (volume === 0) {
+    svg.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+  } else if (volume < 0.5) {
+    svg.innerHTML = '<path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/>';
+  } else {
+    svg.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+  }
+}
+
+// --- UI Helpers ---
+function updatePlayIcon() {
+  const svg = document.getElementById("icon-play");
+  if (isPlaying) {
+    svg.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+  } else {
+    svg.innerHTML = '<path d="M8 5v14l11-7z"/>';
+  }
+}
+
+function updateTranscript(text) {
+  const el = document.getElementById("transcript");
+  const html = text
+    .replace(/\[S1\]/g, '<span class="speaker">S1:</span>')
+    .replace(/\[S2\]/g, '<span class="speaker s2">S2:</span>');
+  el.innerHTML = html;
+}
+
+function fmtTime(s) {
+  if (!s || isNaN(s)) return "0:00";
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, "0")}`;
+}
+
+// --- Controls ---
+document.getElementById("btn-play").addEventListener("click", togglePlay);
+document.getElementById("btn-next").addEventListener("click", nextSegment);
+document.getElementById("btn-prev").addEventListener("click", prevSegment);
+document.getElementById("progress-bar").addEventListener("click", (e) => {
+  if (!audioEl.duration) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  audioEl.currentTime = pct * audioEl.duration;
+});
+
+// Keyboard
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Space") { e.preventDefault(); togglePlay(); }
+  if (e.code === "ArrowRight") nextSegment();
+  if (e.code === "ArrowLeft") prevSegment();
+  if (e.code === "ArrowUp") {
+    e.preventDefault();
+    const slider = document.getElementById("volume-slider");
+    slider.value = Math.min(100, parseInt(slider.value) + 5);
+    slider.dispatchEvent(new Event("input"));
+  }
+  if (e.code === "ArrowDown") {
+    e.preventDefault();
+    const slider = document.getElementById("volume-slider");
+    slider.value = Math.max(0, parseInt(slider.value) - 5);
+    slider.dispatchEvent(new Event("input"));
+  }
+  if (e.code === "Digit1") switchShow("morning");
+  if (e.code === "Digit2") switchShow("news");
+  if (e.code === "Digit3") switchShow("bedtime");
+  if (e.code === "KeyM") {
+    document.getElementById("volume-icon").click();
+  }
+});
+
+// --- Start ---
+init();
+</script>
+</body>
+</html>

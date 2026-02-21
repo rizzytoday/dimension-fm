@@ -1,0 +1,44 @@
+{
+  "show": "Morning Show",
+  "hosts": {
+    "S1": "Rick",
+    "S2": "Zara"
+  },
+  "segments": [
+    {
+      "index": 0,
+      "path": "/Users/zen/dia-radio/audio/morning/morning_000_000.wav",
+      "text": "[S1] Good morning you are listening to Dimension FM. I'm Rick. [S2] And I'm Zara. Let's get into it, we have a packed show today."
+    },
+    {
+      "index": 1,
+      "path": "/Users/zen/dia-radio/audio/morning/morning_001_000.wav",
+      "text": "[S1] Alright top story. Scientists in Norway have discovered that cheese has feelings. [S2] Wait what? [S1] Yeah apparently gouda gets sad when you slice it. They put sensors on parmesan and it was, quote, mildly anxious."
+    },
+    {
+      "index": 2,
+      "path": "/Users/zen/dia-radio/audio/morning/morning_002_000.wav",
+      "text": "[S2] And brie is apparently furious all the time. Which honestly tracks. [S1] I always thought brie had anger issues. [S2] Moving on. In weather, Dimension C-137 is experiencing tomato rain for the third day in a row."
+    },
+    {
+      "index": 3,
+      "path": "/Users/zen/dia-radio/audio/morning/morning_003_000.wav",
+      "text": "[S1] We have a caller on line one. Go ahead caller. [S2] Yeah hi, longtime listener first time caller. I just wanted to say that my toaster has been giving me financial advice. [S1] Is it good advice? [S2] I mean my portfolio is up thirty percent so."
+    },
+    {
+      "index": 4,
+      "path": "/Users/zen/dia-radio/audio/morning/morning_004_000.wav",
+      "text": "[S1] Quick break from our sponsors. Are you tired of having regular knees? Try Knee Plus. Now with forty percent more knee. [S2] Knee Plus. Because two knees just is not enough anymore."
+    },
+    {
+      "index": 5,
+      "path": "/Users/zen/dia-radio/audio/morning/morning_005_000.wav",
+      "text": "[S2] And we are back. Rick, what's trending on interdimensional social media today? [S1] Well apparently the number seven has been cancelled. [S2] The number? [S1] Yeah, turns out seven ate nine and nobody is letting it slide this time."
+    },
+    {
+      "index": 6,
+      "path": "/Users/zen/dia-radio/audio/morning/morning_006_000.wav",
+      "text": "[S1] That's all for the morning show folks. [S2] Stay weird out there. We will be back tomorrow with more news from across the dimensions. [S1] This has been Dimension FM. Goodbye."
+    }
+  ]
+}

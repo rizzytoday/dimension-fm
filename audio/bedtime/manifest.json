@@ -1,0 +1,39 @@
+{
+  "show": "Bedtime Stories",
+  "hosts": {
+    "S1": "Luna",
+    "S2": "Narrator"
+  },
+  "segments": [
+    {
+      "index": 0,
+      "path": "/Users/zen/dia-radio/audio/bedtime/bedtime_000_000.wav",
+      "text": "[S1] Welcome to Dimension FM bedtime stories. Close your eyes. Get comfortable. Tonight's story is called The Last Lighthouse."
+    },
+    {
+      "index": 1,
+      "path": "/Users/zen/dia-radio/audio/bedtime/bedtime_001_000.wav",
+      "text": "[S1] Once upon a time there was a lighthouse keeper who lived at the edge of the world. Every night she would light the lamp. And every night, something in the dark ocean would blink back."
+    },
+    {
+      "index": 2,
+      "path": "/Users/zen/dia-radio/audio/bedtime/bedtime_002_000.wav",
+      "text": "[S1] One evening she decided to blink twice instead of once. The ocean blinked twice back. She blinked three times. The ocean blinked three times. She thought about this for a very long time."
+    },
+    {
+      "index": 3,
+      "path": "/Users/zen/dia-radio/audio/bedtime/bedtime_003_000.wav",
+      "text": "[S1] The next night she did not light the lamp at all. She sat in the dark and waited. After an hour, a soft glow rose from the water. Something was coming to check on her."
+    },
+    {
+      "index": 4,
+      "path": "/Users/zen/dia-radio/audio/bedtime/bedtime_004_000.wav",
+      "text": "[S1] It turned out to be a very large and very concerned fish. The fish said, are you okay? And the lighthouse keeper said, I just wanted to meet you. And the fish said, well here I am. And they sat together watching the stars. The end."
+    },
+    {
+      "index": 5,
+      "path": "/Users/zen/dia-radio/audio/bedtime/bedtime_005_000.wav",
+      "text": "[S1] Goodnight dear listeners. Sleep well. Tomorrow night, we will tell you the story of the cloud that forgot how to rain. Sweet dreams."
+    }
+  ]
+}

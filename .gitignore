@@ -1,0 +1,7 @@
+# Ignore venv and raw backups
+bin/
+lib/
+include/
+pyvenv.cfg
+__pycache__/
+audio/*/raw/

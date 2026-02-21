@@ -1,0 +1,39 @@
+{
+  "show": "Morning Show",
+  "hosts": {
+    "S1": "Rick",
+    "S2": "Zara"
+  },
+  "segments": [
+    {
+      "index": 0,
+      "path": "/Users/zen/dia-radio/audio/morning_ep2/morning_ep2_000_000.wav",
+      "text": "[S1] Welcome back to Dimension FM morning show. I'm Rick. [S2] And I'm Zara. Rick you will not believe what happened over the weekend. [S1] Oh no what now. [S2] Alien cuisine has officially hit the food scene."
+    },
+    {
+      "index": 1,
+      "path": "/Users/zen/dia-radio/audio/morning_ep2/morning_ep2_001_000.wav",
+      "text": "[S2] So there is this new restaurant in Dimension G-88 that serves food from the Andromeda galaxy. [S1] How is it? [S2] Well the appetizer tried to eat me first. Apparently that is a compliment in their culture. [S1] I will stick with pizza thanks."
+    },
+    {
+      "index": 2,
+      "path": "/Users/zen/dia-radio/audio/morning_ep2/morning_ep2_002_000.wav",
+      "text": "[S1] In tech news, wifi routers across Dimension K-12 have become haunted. [S2] Haunted? Like ghost haunted? [S1] Yeah they keep connecting to networks from the afterlife. People are getting emails from dead relatives asking for the wifi password. [S2] That is both creepy and honestly kind of sweet."
+    },
+    {
+      "index": 3,
+      "path": "/Users/zen/dia-radio/audio/morning_ep2/morning_ep2_003_000.wav",
+      "text": "[S2] And in transportation news, time travel traffic jams are getting worse. [S1] Right. Yesterday there were four hundred versions of the same guy all trying to merge onto the highway at the same time. [S2] He was late for a meeting in 1985. [S1] All four hundred of him were still late."
+    },
+    {
+      "index": 4,
+      "path": "/Users/zen/dia-radio/audio/morning_ep2/morning_ep2_004_000.wav",
+      "text": "[S1] We have a listener email. Dear Rick and Zara, I matched with myself on an interdimensional dating app and I am not sure who should pay for dinner. [S2] Oh that is a tough one. [S1] I say split it. [S2] But then you are both paying half which is basically paying full. [S1] Dating yourself is complicated."
+    },
+    {
+      "index": 5,
+      "path": "/Users/zen/dia-radio/audio/morning_ep2/morning_ep2_005_000.wav",
+      "text": "[S1] That is our show for today folks. [S2] Remember, if your toaster starts giving you stock tips, maybe listen. They have been weirdly accurate lately. [S1] This has been Dimension FM. Stay weird. [S2] Bye everyone."
+    }
+  ]
+}

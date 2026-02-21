@@ -1,0 +1,39 @@
+{
+  "show": "Interdimensional News",
+  "hosts": {
+    "S1": "Anchor",
+    "S2": "Field Reporter"
+  },
+  "segments": [
+    {
+      "index": 0,
+      "path": "/Users/zen/dia-radio/audio/news/news_000_000.wav",
+      "text": "[S1] This is Dimension FM news at the top of the hour. I'm your anchor. Let's go straight to our top stories."
+    },
+    {
+      "index": 1,
+      "path": "/Users/zen/dia-radio/audio/news/news_001_000.wav",
+      "text": "[S1] Breaking news from Dimension J-19. The moon has filed for divorce from the planet, citing irreconcilable differences. [S2] That's right. The moon says it needs space. Which is ironic because it already has plenty of space."
+    },
+    {
+      "index": 2,
+      "path": "/Users/zen/dia-radio/audio/news/news_002_000.wav",
+      "text": "[S1] In economic news, the stock market in Dimension K-22 crashed today after investors realized money was just paper with drawings on it. Analysts say this is quote, technically always been true."
+    },
+    {
+      "index": 3,
+      "path": "/Users/zen/dia-radio/audio/news/news_003_000.wav",
+      "text": "[S2] In sports, the annual Interdimensional Chess Boxing Championship ended in controversy when the reigning champion checkmate'd his opponent then also punched him. Judges are reviewing whether that counts as two wins."
+    },
+    {
+      "index": 4,
+      "path": "/Users/zen/dia-radio/audio/news/news_004_000.wav",
+      "text": "[S1] And now the weather across the dimensions. Dimension C-137, rain of small appliances. Dimension B-416, partly cloudy with a chance of existential dread. And Dimension A-1, just beautiful. Always beautiful. Nobody knows why."
+    },
+    {
+      "index": 5,
+      "path": "/Users/zen/dia-radio/audio/news/news_005_000.wav",
+      "text": "[S1] That is the news. I have been your anchor. Remember, in an infinite multiverse, everything is breaking news. Back to regular programming."
+    }
+  ]
+}

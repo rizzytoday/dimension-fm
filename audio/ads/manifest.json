@@ -1,0 +1,39 @@
+{
+  "show": "Interdimensional Ads",
+  "hosts": {
+    "S1": "Announcer",
+    "S2": "Customer"
+  },
+  "segments": [
+    {
+      "index": 0,
+      "path": "/Users/zen/dia-radio/audio/ads/ads_000_000.wav",
+      "text": "[S1] Are you tired of having regular knees? Introducing Knee Plus. Now with forty percent more knee. [S2] I used to have two knees. Now I have two point eight. Life changing. [S1] Knee Plus. Available at all interdimensional pharmacies."
+    },
+    {
+      "index": 1,
+      "path": "/Users/zen/dia-radio/audio/ads/ads_001_000.wav",
+      "text": "[S1] Start your morning with Quantum Coffee. It exists in all possible flavor states until you take a sip. [S2] I opened my cup and it was simultaneously the best and worst coffee I ever had. [S1] Quantum Coffee. Probably delicious."
+    },
+    {
+      "index": 2,
+      "path": "/Users/zen/dia-radio/audio/ads/ads_002_000.wav",
+      "text": "[S1] Tired of living on a hard rocky planet? Move to Memory Foam World. The entire surface remembers your footprint. [S2] I laid down in my backyard and the whole neighborhood sank three feet. [S1] Memory Foam World. Apply for residency today."
+    },
+    {
+      "index": 3,
+      "path": "/Users/zen/dia-radio/audio/ads/ads_003_000.wav",
+      "text": "[S1] Lonely across the multiverse? Try Swipe Infinity. The dating app that matches you with yourself from another dimension. [S2] I went on a date with alternate me. We had everything in common. It was honestly kind of boring. [S1] Swipe Infinity. Love yourself. Literally."
+    },
+    {
+      "index": 4,
+      "path": "/Users/zen/dia-radio/audio/ads/ads_004_000.wav",
+      "text": "[S1] Did you accidentally prevent your own birth? Sounds like you need Time Travel Insurance from Paradox Mutual. [S2] I erased my grandparents wedding and Paradox Mutual had me un-erased within two business days. [S1] Paradox Mutual. Because mistakes happen. Sometimes before you are born."
+    },
+    {
+      "index": 5,
+      "path": "/Users/zen/dia-radio/audio/ads/ads_005_000.wav",
+      "text": "[S1] Introducing Ghost Wifi. Internet service provided by the undead. Unlimited bandwidth from the other side. [S2] The speeds are incredible. My router is haunted but honestly the connection has never been better. [S1] Ghost Wifi. Dead serious about connectivity."
+    }
+  ]
+}
